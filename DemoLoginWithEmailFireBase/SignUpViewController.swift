@@ -2,9 +2,6 @@
 //  SignUpViewController.swift
 //  FirebaseTutorial
 //
-//  Created by James Dacombe on 16/11/2016.
-//  Copyright © 2016 AppCoda. All rights reserved.
-//
 
 import UIKit
 import Firebase
@@ -23,6 +20,7 @@ class SignUpViewController: UIViewController {
         let email = emailTextField.text
         let pass = passwordTextField.text
         if emailTextField.text == "" {
+            //Error
             let alertController = UIAlertController(title: "Error", message: "Please enter your email and password", preferredStyle: .alert)
             
             let defaultAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
@@ -31,6 +29,7 @@ class SignUpViewController: UIViewController {
             present(alertController, animated: true, completion: nil)
             
         } else {
+            //Create new Account with Credentials provided
             Auth.auth().createUser(withEmail: email!, password: pass!) { (user, error) in
                 
                 if error == nil {
@@ -41,21 +40,17 @@ class SignUpViewController: UIViewController {
                     self.present(vc!, animated: true, completion: nil)
                     
                 } else {
+                    //If error from server
                     let alertController = UIAlertController(title: "Error", message: error?.localizedDescription, preferredStyle: .alert)
-                    
                     let defaultAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
                     alertController.addAction(defaultAction)
-                    
                     self.present(alertController, animated: true, completion: nil)
                 }
             }
-            
-            
-            
         }
     }
     
-    
+    //Present login screen 
     @IBAction func presentLoginScreen(_ sender: Any) {
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "LoginScreen")
         self.present(vc!, animated: true, completion: nil)

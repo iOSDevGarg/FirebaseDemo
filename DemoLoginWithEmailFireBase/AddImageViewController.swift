@@ -51,16 +51,16 @@ class AddImageViewController: UIViewController,UIImagePickerControllerDelegate, 
         Spinner.isHidden = true
     }
     
+    //Present Picker
     func handleSelectProfileImageView()
     {
         let picker = UIImagePickerController()
-        
         picker.delegate = self
         picker.allowsEditing = true
-        
         present(picker, animated: true, completion: nil)
     }
     
+    //MARK: -----ImagePicker Handler-----
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         var selectedImageFromPicker: UIImage?
         if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage
@@ -83,7 +83,6 @@ class AddImageViewController: UIViewController,UIImagePickerControllerDelegate, 
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        print("canceled picker")
         dismiss(animated: true, completion: nil)
     }
 
@@ -94,21 +93,20 @@ class AddImageViewController: UIViewController,UIImagePickerControllerDelegate, 
     
     @IBOutlet weak var selectImage: UIButton!
     
+    //Select a new image from gallery
     @IBAction func selectImageAction(_ sender: Any) {
         handleSelectProfileImageView()
     }
     
+    //Save A new image
     @IBAction func SaveImage(_ sender: Any) {
         Spinner.isHidden = false
         Spinner.startAnimating()
         DispatchQueue.global(qos: .background).async {
             let imageName = NSUUID().uuidString
             let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).png")
-            
-          
-            
             if let uploadData = UIImagePNGRepresentation(self.profileImageView.image!) {
-                
+                //Handler
                 storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
                     if let error = error
                     {
@@ -117,9 +115,7 @@ class AddImageViewController: UIViewController,UIImagePickerControllerDelegate, 
                     }
                     else
                     {
-                 
                         let downloadURL = metadata?.downloadURL()?.absoluteString
-                        print(downloadURL!)
                         let key = self.refARtist.childByAutoId().key
                         let artist:[String : AnyObject] = ["id":key as AnyObject, "Link":downloadURL as AnyObject]
                         self.refARtist.child(key).setValue(artist)

@@ -8,8 +8,6 @@ import GoogleSignIn
 
 class LoginViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDelegate {
 
-   
-
     // MARK: Outlets
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -22,9 +20,11 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDeleg
         // Do any additional setup after loading the view, typically from a nib.
 
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         self .viewDidAppear(true)
     }
+    
     override func viewDidAppear(_ animated: Bool) {
         if (GIDSignIn.sharedInstance().hasAuthInKeychain()){
             print("signed in")
@@ -38,6 +38,7 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDeleg
         }
     }
     
+    //Google Sign in Button Action
     @IBAction func googleSignIn(_ sender: Any) {
         signInInfo = "Google"
         UserDefaults.standard.set(self.signInInfo, forKey: "signusing")
@@ -56,23 +57,19 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDeleg
             // Need to handle the forwarding once they sign in.
         }
         GIDSignIn.sharedInstance().signIn()
-        
-//        let vc = self.storyboard?.instantiateViewController(withIdentifier: "Home")
-//        self.present(vc!, animated: true, completion: nil)
     }
+    
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
         if let error = error {
             print("Error \(error)")
             return
         }
-        
-        
-        
-        
+        //Get tokenCredential
         guard let authentication = user.authentication else { return }
         let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken,
                                                        accessToken: authentication.accessToken)
         
+        //Sign with google Credentials
         Auth.auth().signIn(with: credential) { (user, error) in
             if let error = error {
                 print("Error \(error)")
@@ -80,22 +77,14 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDeleg
             }
         }
         
-        
+        //Save User details to Global Class
         let userID = user.userID
         let token = user.authentication.idToken
         let name = user.profile.name
         let email = user.profile.email
-        
         let userImageUrl = user.profile.imageURL(withDimension: 200)
-        
-        print("userid is: \(userID!)", "token is: \(token!)", "name is: \(name!)", "email is: \(email!)", "userimage is: \(userImageUrl!)")
-        
-        print(name!)
-        
-        
-    
+
         // MARK: take google credentials to firebase
-       
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "Home")
         self.present(vc!, animated: true, completion: nil)
     }
@@ -122,9 +111,7 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDeleg
                     
                     //Print into the console if successfully logged in
                     print("You have successfully logged in")
-                    
-                    
-                    
+     
                     //Go to the HomeViewController if the login is sucessful
                     let vc = self.storyboard?.instantiateViewController(withIdentifier: "Home")
                     self.present(vc!, animated: true, completion: nil)
@@ -139,11 +126,12 @@ class LoginViewController: UIViewController, GIDSignInUIDelegate, GIDSignInDeleg
                     
                     self.present(alertController, animated: true, completion: nil)
                     
-                                   }
+                    }
             }
         }
     }
  
+    //Sign up screen 
     @IBAction func presentSignUp(_ sender: Any) {
         let vc = self.storyboard?.instantiateViewController(withIdentifier: "SignUp")
         self.present(vc!, animated: true, completion: nil)

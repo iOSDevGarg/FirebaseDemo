@@ -30,18 +30,18 @@ class NamesTableViewController: UIViewController, UITableViewDelegate, UITableVi
       
             self.databaseHandler = self.readData.child("artists").observe(.value, with: { (snapshot) in
                 self.postData = ((snapshot.value) as? [String : AnyObject]!)!
-                print(self.postData)
                 
+                //get all data
                 if let snapDict = snapshot.value as? [String:AnyObject]{
-                    
                     for each in snapDict{
-                        
+                        //Iterate and get data in different arrays
                         let artistName = each.value["artistName"] as! String
                         let ID = each.value["id"] as! String
                         self.names.append(artistName)
                         self.id.append(ID)
                         print(self.names[0])
                     }
+                    //reload tableView
                     self.namesTable.dataSource = self
                     self.namesTable.delegate = self
                     self.namesTable.reloadData()
@@ -53,6 +53,8 @@ class NamesTableViewController: UIViewController, UITableViewDelegate, UITableVi
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    //MARK: -----TableView Methods-----
      func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
@@ -89,18 +91,10 @@ class NamesTableViewController: UIViewController, UITableViewDelegate, UITableVi
     //Delete Data from dataBase and from table
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let state = id[indexPath.row]
-            print(state)
-            
-            
-            
             Database.database().reference().child("artists").child(id[indexPath.row]).removeValue(completionBlock: { (error, databaseRef) in
-                
-                
                 if error != nil {
-                    print("There has been an error:\(error)")
+                    print("There has been an error:\(String(describing: error))")
                 }
-                
             })
             names.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
@@ -108,24 +102,8 @@ class NamesTableViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    
-    
-
-    
-    
-    
-    
     @IBAction func backAction(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

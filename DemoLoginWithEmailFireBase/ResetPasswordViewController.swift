@@ -2,8 +2,6 @@
 //  ResetPasswordViewController.swift
 //  FirebaseTutorial
 //
-//  Created by James Dacombe on 16/11/2016.
-//  Copyright © 2016 AppCoda. All rights reserved.
 //
 
 import UIKit
@@ -19,6 +17,7 @@ class ResetPasswordViewController: UIViewController {
     @IBAction func submitAction(_ sender: AnyObject) {
         
         if self.emailTextField.text == "" {
+            //if Tf is empty
             let alertController = UIAlertController(title: "Oops!", message: "Please enter an email.", preferredStyle: .alert)
             
             let defaultAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
@@ -27,6 +26,7 @@ class ResetPasswordViewController: UIViewController {
             present(alertController, animated: true, completion: nil)
         
         } else {
+            //TF is not empty time to hit server
             Auth.auth().sendPasswordReset(withEmail: self.emailTextField.text!, completion: { (error) in
                 
                 var title = ""
@@ -40,12 +40,10 @@ class ResetPasswordViewController: UIViewController {
                     message = "Password reset email sent."
                     self.emailTextField.text = ""
                 }
-                
+                //Successful Alert
                 let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-                
                 let defaultAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                alertController.addAction(defaultAction)
-                
+                alertController.addAction(defaultAction)                
                 self.present(alertController, animated: true, completion: nil)
             })
         }

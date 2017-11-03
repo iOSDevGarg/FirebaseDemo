@@ -12,21 +12,22 @@ import Firebase
 class ShowImagesViewController: UIViewController, UICollectionViewDelegate,UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     @IBOutlet weak var imagesCollection: UICollectionView!
+    
     var images = [UIImage]()
     var linksArray = [String:AnyObject]()
     var links = [String]()
     let width = UIScreen.main.bounds.size.width
     let height = UIScreen.main.bounds.size.height
-    
     var idOfUser = String()
     lazy var lazyImage:LazyImage = LazyImage()
     var readData =  DatabaseReference()
     var databaseHandler:DatabaseHandle?
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
+    
+    //MARK: -----viewDidLoad-----
     override func viewDidLoad() {
         super.viewDidLoad()
-
         
         if appDelegate.idofuser != ""{
             idOfUser = appDelegate.idofuser
@@ -35,11 +36,13 @@ class ShowImagesViewController: UIViewController, UICollectionViewDelegate,UICol
             idOfUser = ""
         }
 
+        //Get links in Start
         getImageLinks()
         
 
     }
     
+    //MARK: -----get all image Links-----
     func getImageLinks() {
          self.readData = Database.database().reference()
         
@@ -51,12 +54,12 @@ class ShowImagesViewController: UIViewController, UICollectionViewDelegate,UICol
                 if let snapDict = snapshot.value as? [String:AnyObject]{
                     
                     for each in snapDict{
-                        
+                        //append link one by one
                         let LinksUrl = each.value["Link"] as! String
                         self.links.append(LinksUrl)
                         
                     }
-                    print(self.links)
+                    //reload collectionView
                     self.imagesCollection.dataSource = self
                     self.imagesCollection.delegate = self
                     self.imagesCollection.reloadData()
@@ -72,7 +75,7 @@ class ShowImagesViewController: UIViewController, UICollectionViewDelegate,UICol
         })
         
     }
-    
+    //MARK: -----viewDidAppear-----
     override func viewDidAppear(_ animated: Bool) {
         if idOfUser == ""
         {
@@ -88,11 +91,10 @@ class ShowImagesViewController: UIViewController, UICollectionViewDelegate,UICol
         
     }
 
+    //MARK: -----CollectionView Delegates-----
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
-    
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int{
         return links.count
     }
@@ -125,8 +127,11 @@ class ShowImagesViewController: UIViewController, UICollectionViewDelegate,UICol
         return 0
     }
     
+    
+    //MARK: -----Button used-----
     @IBOutlet weak var backAction: UIButton!
 
+    
     @IBAction func back(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
